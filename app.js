@@ -32,9 +32,9 @@ app.use(errors());
 app.use(errorHandler);
 
 mongoose.connect(DB_ADDRESS, () => {
-  console.log('Connection successful');
+  console.log('Успешное подключение к БД');
 });
 
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+  console.log(`Приложение запущено. Порт ${PORT}`);
 });
