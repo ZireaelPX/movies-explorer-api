@@ -1,7 +1,7 @@
 const allowedCors = [
   'http://localhost:3000',
-  'http://artempavlov.movies.nomoredomains.xyz/',
-  'https://artempavlov.movies.nomoredomains.xyz/',
+  'http://artempavlov.movies.nomoredomains.xyz',
+  'https://artempavlov.movies.nomoredomains.xyz',
 ];
 
 const cors = (req, res, next) => {
