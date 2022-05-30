@@ -20,6 +20,7 @@ mongoose.connect(DB_URL, () => {
 });
 
 app.use(express.json());
+app.use(express.urlencoded());
 app.use(cookieParser());
 app.use(requestLogger);
 app.use(cors);
