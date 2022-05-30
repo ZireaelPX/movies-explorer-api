@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 
-const { PORT, DB_URL } = require('./utils/config');
+const { PORT, DB_URL = 'mongodb://localhost:27017/moviesdbdb' } = require('./utils/config');
 
 const routes = require('./routes');
 const errorHandler = require('./middlewares/error-determinant');
@@ -15,10 +15,11 @@ const cors = require('./middlewares/cors');
 
 const app = express();
 
-mongoose.connect(DB_URL);
+mongoose.connect(DB_URL, () => {
+  console.log('Успешное подключение к БД');
+});
 
 app.use(express.json());
-app.use(express.urlencoded());
 app.use(cookieParser());
 app.use(requestLogger);
 app.use(cors);
@@ -31,4 +32,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`Приложение запущено. Порт ${PORT}`);
+});
