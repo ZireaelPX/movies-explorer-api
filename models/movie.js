@@ -1,12 +1,22 @@
 const mongoose = require('mongoose');
-const isUrl = require('validator/lib/isURL');
+const validator = require('validator');
 
-const movieSchema = new mongoose.Schema({
-  country: {
+const { validationErrorMessages } = require('../utils/constants');
+
+const movieShema = new mongoose.Schema({
+  movieId: {
+    type: Number,
+    required: true,
+  },
+  nameRU: {
     type: String,
     required: true,
   },
-  director: {
+  nameEN: {
+    type: String,
+    required: true,
+  },
+  description: {
     type: String,
     required: true,
   },
@@ -18,7 +28,11 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: {
+  country: {
+    type: String,
+    required: true,
+  },
+  director: {
     type: String,
     required: true,
   },
@@ -26,24 +40,30 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (url) => isUrl(url),
-      message: 'Некорректный URL',
+      validator(v) {
+        return validator.isURL(v);
+      },
+      message: validationErrorMessages.imageInvalidUrl,
     },
   },
-  trailerLink: {
+  trailer: {
     type: String,
     required: true,
     validate: {
-      validator: (url) => isUrl(url),
-      message: 'Некорректный URL',
+      validator(v) {
+        return validator.isURL(v);
+      },
+      message: validationErrorMessages.trailerInvalidUrl,
     },
   },
   thumbnail: {
     type: String,
     required: true,
     validate: {
-      validator: (url) => isUrl(url),
-      message: 'Некорректный URL',
+      validator(v) {
+        return validator.isURL(v);
+      },
+      message: validationErrorMessages.thumbnailInvalidUrl,
     },
   },
   owner: {
@@ -51,18 +71,6 @@ const movieSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
-  movieId: {
-    type: String,
-    required: true,
-  },
-  nameRU: {
-    type: String,
-    required: true,
-  },
-  nameEN: {
-    type: String,
-    required: true,
-  },
 });
 
-module.exports = mongoose.model('movie', movieSchema);
+module.exports = mongoose.model('movie', movieShema);

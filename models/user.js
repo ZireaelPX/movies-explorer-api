@@ -1,46 +1,43 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const isEmail = require('validator/lib/isEmail');
-const AuthError = require('../errors/auth-error');
+const validator = require('validator');
+
+const { validationErrorMessages } = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'John Smith',
   },
   email: {
     type: String,
     required: true,
     unique: true,
     validate: {
-      validator: (email) => isEmail(email),
-      message: 'Некорректый адрес почты',
+      validator(v) {
+        return validator.isEmail(v);
+      },
+      message: validationErrorMessages.emailInvalidUrl,
     },
   },
   password: {
     type: String,
     required: true,
     select: false,
+    validate: {
+      validator(v) {
+        return validator.isStrongPassword(v, {
+          minLength: 8,
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 0,
+        });
+      },
+      message: validationErrorMessages.passwordNotStrong,
+    },
   },
 });
-
-// eslint-disable-next-line func-names
-userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select('+password')
-    .then((user) => {
-      if (!user) {
-        return Promise.reject(new AuthError('Неправильная почта или пароль...'));
-      }
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            return Promise.reject(new AuthError('Неправильная почта или пароль...'));
-          }
-          return user;
-        });
-    });
-};
 
 module.exports = mongoose.model('user', userSchema);
